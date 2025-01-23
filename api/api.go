@@ -18,13 +18,8 @@ func ListendAndServe(port string, query *database.Queries) {
 	startServer(router, port)
 }
 
-func createControllers(query *database.Queries) user.UserHandler {
-	userHandler := user.UserHandler{Query: query}
-	return userHandler
-}
-
 func applyAllRoutes(router *chi.Mux, query *database.Queries) {
-	userHandler := createControllers(query)
+	userHandler := user.NewUserHandler(query)
 	applyUserRoutes(router, userHandler)
 }
 
