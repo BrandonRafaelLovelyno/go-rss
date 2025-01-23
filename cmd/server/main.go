@@ -2,8 +2,10 @@ package main
 
 import (
 	"database/sql"
+	"github.com/BrandonRafaelLovelyno/go-rss/handler"
 	"github.com/BrandonRafaelLovelyno/go-rss/internal/database"
 	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/cors"
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 	"log"
@@ -28,8 +30,6 @@ func main() {
 		log.Fatal("$PG_URL must be set")
 	}
 
-	router := chi.NewRouter()
-
 	conn, err := sql.Open("postgres", dbUrl)
 	if err != nil {
 		log.Fatal("Error making pool connection: ", err)
@@ -38,9 +38,21 @@ func main() {
 		log.Fatal("Cannot ping database: ", err)
 	}
 
-	api := &apiCfg{DB: database.New(conn)}
+	//	api := &apiCfg{DB: database.New(conn)}
 
-	log.Println("Starting server on port " + port)
+	router := chi.NewRouter()
+	router.Use(cors.Handler(cors.Options{
+		AllowedOrigins:   []string{"https://*", "http://*"},
+		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowedHeaders:   []string{"*"},
+		ExposedHeaders:   []string{"Link"},
+		AllowCredentials: false,
+		MaxAge:           300,
+	}))
+
+	router.Get("/", handler.HandleReadiness)
+
+	log.Print("Starting server on port " + port)
 	server := &http.Server{Addr: ":" + port, Handler: router}
 	err = server.ListenAndServe()
 	if err != nil {
