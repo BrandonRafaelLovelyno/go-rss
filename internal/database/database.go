@@ -7,6 +7,8 @@ package database
 import (
 	"context"
 	"database/sql"
+	"log"
+	_ "github.com/lib/pq"
 )
 
 type DBTX interface {
@@ -14,10 +16,6 @@ type DBTX interface {
 	PrepareContext(context.Context, string) (*sql.Stmt, error)
 	QueryContext(context.Context, string, ...interface{}) (*sql.Rows, error)
 	QueryRowContext(context.Context, string, ...interface{}) *sql.Row
-}
-
-func New(db DBTX) *Queries {
-	return &Queries{db: db}
 }
 
 type Queries struct {
@@ -28,4 +26,13 @@ func (q *Queries) WithTx(tx *sql.Tx) *Queries {
 	return &Queries{
 		db: tx,
 	}
+}
+
+func Connect(pgUrl string) *Queries {
+	db, err := sql.Open("postgres", pgUrl)
+	if err != nil {
+		log.Fatal("Error making pool connection: ", err)
+	}
+
+	return &Queries{db: db}
 }
