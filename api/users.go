@@ -8,8 +8,9 @@ import (
 )
 
 func applyUsersRouter(router *chi.Mux, query *database.Queries) {
-	userHandler := users.NewUserHandler(query)
+	user := users.NewUserHandler(query)
+	auth := auth.NewAuthMiddleware(query)
 
-	router.Get("/user", auth.Authenticate(userHandler.HandleGetUser, *query))
-	router.Post("/user", userHandler.HandleCreateUser)
+	router.Get("/user", auth.Authenticate(user.HandleGetUser))
+	router.Post("/user", user.HandleCreateUser)
 }

@@ -9,9 +9,19 @@ import (
 	"github.com/BrandonRafaelLovelyno/go-rss/pkg/utils"
 )
 
+type AuthMiddleware struct {
+	query *database.Queries
+}
+
 type authedHandler func(w http.ResponseWriter, r *http.Request, user database.User)
 
-func Authenticate(handler authedHandler, query database.Queries) func(http.ResponseWriter, *http.Request) {
+func NewAuthMiddleware(query *database.Queries) *AuthMiddleware {
+	return &AuthMiddleware{
+		query: query,
+	}
+}
+
+func (h *AuthMiddleware) Authenticate(handler authedHandler) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		token, err := extractApiKey(r.Header)
@@ -20,7 +30,7 @@ func Authenticate(handler authedHandler, query database.Queries) func(http.Respo
 			return
 		}
 
-		user, err := users.GetByApiKey(query, r.Context(), token)
+		user, err := users.GetByApiKey(*h.query, r.Context(), token)
 		if err != nil {
 			utils.RespondWithError(w, 401, fmt.Sprintf("error getting user: %v", err))
 		}
