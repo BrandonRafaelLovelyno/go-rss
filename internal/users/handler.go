@@ -4,9 +4,7 @@ import (
 	"fmt"
 	"github.com/BrandonRafaelLovelyno/go-rss/internal/database"
 	"github.com/BrandonRafaelLovelyno/go-rss/pkg/utils"
-	"github.com/google/uuid"
 	"net/http"
-	"time"
 )
 
 type UserHandler struct {
@@ -25,12 +23,7 @@ func (h *UserHandler) HandleCreateUser(w http.ResponseWriter, r *http.Request) {
 		utils.RespondWithError(w, 400, fmt.Sprintf("error reading request: %s", err))
 	}
 
-	user, err := h.Service.create(r.Context(), database.CreateUserParams{
-		Name:      parameter.Name,
-		ID:        uuid.New(),
-		CreatedAt: time.Now(),
-		UpdatedAt: time.Now(),
-	})
+	user, err := h.Service.create(r.Context(), parameter.Name)
 	if err != nil {
 		utils.RespondWithError(w, 500, fmt.Sprintf("error creating user: %s", err))
 	}

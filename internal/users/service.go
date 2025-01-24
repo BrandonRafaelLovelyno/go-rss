@@ -2,7 +2,10 @@ package users
 
 import (
 	"context"
+	"time"
+
 	"github.com/BrandonRafaelLovelyno/go-rss/internal/database"
+	"github.com/google/uuid"
 )
 
 type UserService struct {
@@ -15,8 +18,13 @@ func newUserService(query *database.Queries) *UserService {
 	}
 }
 
-func (s *UserService) create(ctx context.Context, params database.CreateUserParams) (*database.User, error) {
-	user, err := s.Query.CreateUser(ctx, params)
+func (s *UserService) create(ctx context.Context, name string) (*database.User, error) {
+	user, err := s.Query.CreateUser(ctx, database.CreateUserParams{
+		Name:      name,
+		ID:        uuid.New(),
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+	})
 	if err != nil {
 		return nil, err
 	}
