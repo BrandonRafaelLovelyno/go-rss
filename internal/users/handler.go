@@ -21,11 +21,13 @@ func (h *UserHandler) HandleCreateUser(w http.ResponseWriter, r *http.Request) {
 	parameter, err := getCreateUserParams(r)
 	if err != nil {
 		utils.RespondWithError(w, 400, fmt.Sprintf("error reading request: %s", err))
+		return
 	}
 
 	user, err := h.Service.create(r.Context(), parameter.Name)
 	if err != nil {
 		utils.RespondWithError(w, 500, fmt.Sprintf("error creating user: %s", err))
+		return
 	}
 
 	utils.RespondWithJson(w, 201, user)
