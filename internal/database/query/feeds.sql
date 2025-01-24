@@ -5,3 +5,6 @@ RETURNING *;
 
 -- name: GetFeedByUserId :many
 SELECT * FROM feeds WHERE user_id = $1;
+
+-- name: GetFollowedFeedsByUserId :many
+SELECT f.* FROM feeds f JOIN feeds_follows ff ON f.id = ff.feed_id WHERE ff.user_id = $1;

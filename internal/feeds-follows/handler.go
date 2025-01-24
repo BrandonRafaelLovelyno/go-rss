@@ -34,3 +34,6 @@ func (h *FeedFollowHandler) HandleFollowFeed(w http.ResponseWriter, r *http.Requ
 	msg := makeMessageResponse("Followed feed")
 	utils.RespondWithJson(w, 201, msg)
 }
+
+func (h *FeedFollowHandler) HandleGetFollowedFeed(w http.ResponseWriter, r *http.Request, user database.User) {
+}

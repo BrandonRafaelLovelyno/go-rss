@@ -13,4 +13,5 @@ func applyFeedsRouter(router *chi.Mux, query *database.Queries) {
 
 	router.Post("/feed", auth.Authenticate(feedHandler.HandleCreateFeed))
 	router.Get("/feed/user", auth.Authenticate(feedHandler.HandleGetUserFeeds))
+	router.Get("/feed/followed", auth.Authenticate(feedHandler.HandleGetFollowedFeeds))
 }

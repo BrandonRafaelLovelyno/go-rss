@@ -32,3 +32,12 @@ func (s *FeedService) getByUser(ctx context.Context, user database.User) ([]data
 
 	return feeds, nil
 }
+
+func (s *FeedService) getFollowedFeedByUser(ctx context.Context, user database.User) ([]database.Feed, error) {
+	feeds, err := s.Query.GetFollowedFeedsByUserId(ctx, user.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	return feeds, nil
+}
