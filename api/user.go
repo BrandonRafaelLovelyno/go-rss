@@ -1,11 +1,14 @@
 package api
 
 import (
+	"github.com/BrandonRafaelLovelyno/go-rss/internal/auth"
+	"github.com/BrandonRafaelLovelyno/go-rss/internal/database"
 	"github.com/BrandonRafaelLovelyno/go-rss/internal/user"
-	"github.com/BrandonRafaelLovelyno/go-rss/pkg/utils"
 	"github.com/go-chi/chi/v5"
 )
 
-func applyUserRoutes(router *chi.Mux, userHandler *user.UserHandler) {
-	router.Post("/user", utils.SendResponse(userHandler.HandleCreateUser))
+func applyUserRoutes(router *chi.Mux, query *database.Queries) {
+	userHandler := user.NewUserHandler(query)
+
+	router.Get("/user", auth.Authenticate(userHandler.HandleGetUser, *query))
 }

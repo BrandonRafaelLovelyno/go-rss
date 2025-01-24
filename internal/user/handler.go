@@ -11,68 +11,35 @@ import (
 
 type UserHandler struct {
 	Query   *database.Queries
-	service *UserService
+	Service *UserService
 }
 
 func NewUserHandler(query *database.Queries) *UserHandler {
 	return &UserHandler{
 		Query:   query,
-		service: NewUserService(query),
+		Service: NewUserService(query),
 	}
 }
 
-func (h *UserHandler) HandleCreateUser(w http.ResponseWriter, r *http.Request) (hr *utils.HandlerReturn) {
+func (h *UserHandler) HandleCreateUser(w http.ResponseWriter, r *http.Request) {
 	parameter, err := getCreateUserParams(r)
 	if err != nil {
-		return &utils.HandlerReturn{
-			Code:  400,
-			Error: fmt.Errorf("error reading parameters: %w", err),
-		}
+		utils.RespondWithError(w, 400, fmt.Sprintf("error reading request: %s", err))
 	}
 
-	user, err := h.service.Create(r.Context(), database.CreateUserParams{
+	user, err := h.Service.create(r.Context(), database.CreateUserParams{
 		Name:      parameter.Name,
 		ID:        uuid.New(),
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	})
 	if err != nil {
-		return &utils.HandlerReturn{
-			Code:  500,
-			Error: fmt.Errorf("error creating user: %w", err),
-		}
+		utils.RespondWithError(w, 500, fmt.Sprintf("error creating user: %s", err))
 	}
 
-	return &utils.HandlerReturn{
-		Code:    201,
-		Payload: &user,
-	}
+	utils.RespondWithJson(w, 201, user)
 }
 
-func (h *UserHandler) HandleGetUserByApiKey(w http.ResponseWriter, r *http.Request) (hr *utils.HandlerReturn) {
-	parameter, err := getCreateUserParams(r)
-	if err != nil {
-		return &utils.HandlerReturn{
-			Code:  400,
-			Error: fmt.Errorf("error reading parameters: %w", err),
-		}
-	}
-
-	user, err := h.service.Create(r.Context(), database.CreateUserParams{
-		Name:      parameter.Name,
-		ID:        uuid.New(),
-		CreatedAt: time.Now(),
-		UpdatedAt: time.Now(),
-	})
-	if err != nil {
-		return &utils.HandlerReturn{
-			Code:  500,
-			Error: fmt.Errorf("error creating user: %w", err),
-		}
-	}
-
-	return &utils.HandlerReturn{
-		Code:    201,
-		Payload: &user,
-	}
+func (h *UserHandler) HandleGetUser(w http.ResponseWriter, r *http.Request, user database.User) {
+	utils.RespondWithJson(w, 200, user)
 }
