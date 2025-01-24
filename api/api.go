@@ -18,7 +18,8 @@ func ListendAndServe(port string, query *database.Queries) {
 }
 
 func applyAllRoutes(router *chi.Mux, query *database.Queries) {
-	applyUserRoutes(router, query)
+	applyUsersRouter(router, query)
+	applyFeedsRouter(router, query)
 }
 
 func applyCORS(router *chi.Mux) {

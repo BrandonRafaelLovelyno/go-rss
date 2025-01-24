@@ -1,4 +1,4 @@
-package user
+package users
 
 import (
 	"fmt"
@@ -10,14 +10,12 @@ import (
 )
 
 type UserHandler struct {
-	Query   *database.Queries
 	Service *UserService
 }
 
 func NewUserHandler(query *database.Queries) *UserHandler {
 	return &UserHandler{
-		Query:   query,
-		Service: NewUserService(query),
+		Service: newUserService(query),
 	}
 }
 

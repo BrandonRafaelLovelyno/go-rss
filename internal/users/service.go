@@ -1,4 +1,4 @@
-package user
+package users
 
 import (
 	"context"
@@ -9,7 +9,7 @@ type UserService struct {
 	Query *database.Queries
 }
 
-func NewUserService(query *database.Queries) *UserService {
+func newUserService(query *database.Queries) *UserService {
 	return &UserService{
 		Query: query,
 	}

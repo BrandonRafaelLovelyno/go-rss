@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/BrandonRafaelLovelyno/go-rss/internal/database"
-	"github.com/BrandonRafaelLovelyno/go-rss/internal/user"
+	"github.com/BrandonRafaelLovelyno/go-rss/internal/users"
 	"github.com/BrandonRafaelLovelyno/go-rss/pkg/utils"
 )
 
@@ -20,7 +20,7 @@ func Authenticate(handler authedHandler, query database.Queries) func(http.Respo
 			return
 		}
 
-		user, err := user.GetByApiKey(query, r.Context(), token)
+		user, err := users.GetByApiKey(query, r.Context(), token)
 		if err != nil {
 			utils.RespondWithError(w, 401, fmt.Sprintf("error getting user: %v", err))
 		}
