@@ -9,7 +9,8 @@ import (
 
 func applyFeedsRouter(router *chi.Mux, query *database.Queries) {
 	feedHandler := feeds.NewFeedHandler(query)
+	auth := auth.NewAuthMiddleware(query)
 
-	router.Post("/feed", auth.Authenticate(feedHandler.HandleCreateFeed, *query))
-	router.Get("/feed/user", auth.Authenticate(feedHandler.HandleGetUserFeeds, *query))
+	router.Post("/feed", auth.Authenticate(feedHandler.HandleCreateFeed))
+	router.Get("/feed/user", auth.Authenticate(feedHandler.HandleGetUserFeeds))
 }
