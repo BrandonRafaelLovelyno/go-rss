@@ -11,4 +11,5 @@ func applyUserRoutes(router *chi.Mux, query *database.Queries) {
 	userHandler := user.NewUserHandler(query)
 
 	router.Get("/user", auth.Authenticate(userHandler.HandleGetUser, *query))
+	router.Post("/user", userHandler.HandleCreateUser)
 }
