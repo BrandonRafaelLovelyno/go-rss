@@ -8,3 +8,9 @@ SELECT * FROM feeds WHERE user_id = $1;
 
 -- name: GetFollowedFeedsByUserId :many
 SELECT f.* FROM feeds f JOIN feeds_follows ff ON f.id = ff.feed_id WHERE ff.user_id = $1;
+
+-- name: GetFeedsToFetch :many
+SELECT * FROM feeds ORDER BY last_fetched ASC LIMIT $1;
+
+-- name: UpdateFeedLastFetched :one
+UPDATE feeds SET last_fetched = $2 WHERE id = $1 RETURNING *;
