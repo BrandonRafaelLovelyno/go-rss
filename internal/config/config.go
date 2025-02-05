@@ -12,7 +12,7 @@ type Config struct {
 }
 
 func Load() *Config {
-	godotenv.Load("../../.env")
+	godotenv.Load()
 	port := os.Getenv("PORT")
 	dbUrl := os.Getenv("PG_URL")
 
